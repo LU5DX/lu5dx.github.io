@@ -1,5 +1,313 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>LU5DX</title></head>
-<body></body>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Martin LU5DX — Ham Radio & Software</title>
+  <meta name="description" content="Martin LU5DX — Argentine ham radio operator, software developer, and author of the AetherSDR documentation project.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #050818;
+      --bg-card:   #0d1130;
+      --violet:    #7c3aed;
+      --violet-2:  #a78bfa;
+      --cyan:      #06b6d4;
+      --cyan-2:    #67e8f9;
+      --text:      #f0f4f8;
+      --text-dim:  #94a3b8;
+      --border:    rgba(255,255,255,0.08);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Starfield background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.25), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(6,182,212,0.15), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4rem 1.5rem 6rem;
+      gap: 3rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+      max-width: 640px;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid var(--violet-2);
+      box-shadow: 0 0 32px rgba(124,58,237,0.5);
+      object-fit: cover;
+    }
+
+    .callsign {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #c4b5fd, var(--cyan-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .badge {
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.25rem;
+    }
+
+    /* ── Cards grid ── */
+    .cards {
+      width: 100%;
+      max-width: 860px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding: 1.5rem;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cyan);
+      box-shadow: 0 12px 32px rgba(6,182,212,0.2);
+    }
+
+    .card-icon { font-size: 1.8rem; }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c4b5fd, var(--cyan-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .card-lang {
+      font-size: 0.75rem;
+      color: var(--cyan);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-top: auto;
+      padding-top: 0.5rem;
+    }
+
+    /* ── Support section ── */
+    .support {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+      max-width: 480px;
+    }
+
+    .support p {
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.3rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--violet), var(--cyan));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+  <main>
+
+    <div class="hero">
+      <img class="avatar"
+           src="https://cdn-bio.qrz.com/x/lu5dx/QRZ_COM_PNG.jpg"
+           alt="Martin LU5DX"
+           onerror="this.style.display='none'">
+      <div class="callsign">Martin · LU5DX</div>
+      <p class="subtitle">
+        Argentine ham radio operator, software developer, and creator of the
+        AI-powered AetherSDR documentation project.
+      </p>
+      <div class="badge-row">
+        <span class="badge">🇦🇷 Argentina</span>
+        <span class="badge">📡 Ham Radio</span>
+        <span class="badge">⚡ AetherSDR</span>
+        <span class="badge">🤖 AI/RAG</span>
+        <span class="badge">💻 Open Source</span>
+      </div>
+    </div>
+
+    <div style="width:100%;max-width:860px">
+      <p class="section-title">AetherSDR Documentation</p>
+    </div>
+
+    <div class="cards">
+      <a class="card" href="https://lu5dx.github.io/AetherSDRDocsEnglish/" target="_blank" rel="noopener">
+        <div class="card-icon">📖</div>
+        <div class="card-title">AetherSDR User Manual</div>
+        <p class="card-desc">
+          Complete user documentation for AetherSDR — the native Qt6 SmartSDR-compatible
+          client for FlexRadio transceivers. Installation, configuration, and full feature reference.
+        </p>
+        <div class="card-lang">🇺🇸 English</div>
+      </a>
+
+      <a class="card" href="https://lu5dx.github.io/AetherSDRDocsSpanish/" target="_blank" rel="noopener">
+        <div class="card-icon">📖</div>
+        <div class="card-title">Manual de Usuario AetherSDR</div>
+        <p class="card-desc">
+          Documentación completa para AetherSDR — el cliente nativo Qt6 compatible con SmartSDR
+          para transceivers FlexRadio. Instalación, configuración y referencia completa.
+        </p>
+        <div class="card-lang">🇦🇷 Español</div>
+      </a>
+
+      <a class="card" href="https://github.com/ten9876/AetherSDR" target="_blank" rel="noopener">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">AetherSDR on GitHub</div>
+        <p class="card-desc">
+          The AetherSDR application — a free, open-source, native FlexRadio client
+          built with C++20 and Qt6. Runs on Linux, macOS, and Windows.
+        </p>
+        <div class="card-lang">🔗 github.com/ten9876/AetherSDR</div>
+      </a>
+    </div>
+
+    <div class="support">
+      <p class="section-title">Support the project</p>
+      <p>
+        The documentation pipeline and AI assistant run on real infrastructure.
+        If this saved you time, consider buying me a coffee — it helps keep
+        everything running and improving.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://ko-fi.com/lu5dx" target="_blank" rel="noopener">☕ Ko-fi</a>
+        <a class="btn btn-secondary" href="https://paypal.me/lu5dx599" target="_blank" rel="noopener">💙 PayPal</a>
+        <a class="btn btn-secondary" href="https://github.com/LU5DX" target="_blank" rel="noopener">⭐ GitHub</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Martin LU5DX &middot; <a href="https://github.com/LU5DX">github.com/LU5DX</a>
+    &middot; &copy; 2026
+  </footer>
+</body>
 </html>
